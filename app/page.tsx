@@ -23,8 +23,6 @@ export default async function HomePage() {
   return (
     <div className="mx-auto w-full max-w-6xl px-6 pb-20 pt-14 md:pt-20">
       <section className="mb-14 space-y-6 border-b border-[var(--line)] pb-10">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-orange">Web designer e Gestor de tráfego</p>
-
         <h1 className="max-w-[16ch] font-heading text-5xl leading-[0.98] text-[var(--text-main)] md:text-7xl">
           Blog da BELEGANTE_
         </h1>
