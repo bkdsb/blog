@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { fetchPostBySlug, fetchPostSlugs, formatDate, htmlToText } from '@/lib/wp';
+import { AuthorSidebar } from '@/components/author-sidebar';
+import { fetchPostBySlug, fetchPostSlugs, formatDate, getAuthorSummaries, htmlToText } from '@/lib/wp';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -59,27 +60,35 @@ export default async function PostPage({ params }: Props) {
 
   const contentHtml = post.content?.trim() || post.excerpt?.trim() || '';
 
+  const authorSummaries = getAuthorSummaries([post], 1);
+
   return (
-    <article className="mx-auto w-full max-w-4xl px-6 pb-24 pt-14 md:pt-20">
-      <header className="space-y-6 border-b border-[#ddd4c5] pb-10">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-orange">{formatDate(post.date)}</p>
+    <article className="mx-auto w-full max-w-6xl px-6 pb-24 pt-14 md:pt-20">
+      <div className="grid items-start gap-9 xl:grid-cols-[minmax(0,3fr)_minmax(0,1fr)]">
+        <div>
+          <header className="space-y-6 border-b border-[var(--line)] pb-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-orange">{formatDate(post.date)}</p>
 
-        <h1
-          className="font-heading text-4xl leading-[1.02] text-brand-ink md:text-6xl"
-          dangerouslySetInnerHTML={{ __html: post.title }}
-        />
+            <h1
+              className="font-heading text-4xl leading-[1.02] text-[var(--text-main)] md:text-6xl"
+              dangerouslySetInnerHTML={{ __html: post.title }}
+            />
 
-        {post.author?.node?.name ? <p className="text-base text-brand-muted">Por {post.author.node.name}</p> : null}
-      </header>
+            {post.author?.node?.name ? <p className="text-base text-[var(--text-muted)]">Por {post.author.node.name}</p> : null}
+          </header>
 
-      {contentHtml ? (
-        <section
-          className="prose prose-lg mt-10 max-w-none prose-headings:font-heading prose-headings:text-brand-ink prose-p:text-brand-ink prose-a:text-brand-orange prose-a:no-underline hover:prose-a:underline prose-strong:text-brand-ink prose-blockquote:border-brand-orange prose-blockquote:text-brand-muted"
-          dangerouslySetInnerHTML={{ __html: contentHtml }}
-        />
-      ) : (
-        <p className="mt-10 text-brand-muted">Este post ainda não possui conteúdo visível.</p>
-      )}
+          {contentHtml ? (
+            <section
+              className="prose prose-lg mt-10 max-w-none prose-headings:font-heading prose-headings:text-[var(--text-main)] prose-p:text-[var(--text-main)] prose-a:text-brand-orange prose-a:no-underline hover:prose-a:underline prose-strong:text-[var(--text-main)] prose-blockquote:border-brand-orange prose-blockquote:text-[var(--text-muted)]"
+              dangerouslySetInnerHTML={{ __html: contentHtml }}
+            />
+          ) : (
+            <p className="mt-10 text-[var(--text-muted)]">Este post ainda não possui conteúdo visível.</p>
+          )}
+        </div>
+
+        <AuthorSidebar authors={authorSummaries} className="xl:sticky xl:top-24" />
+      </div>
     </article>
   );
 }

@@ -12,6 +12,22 @@ export type WPImage = {
   } | null;
 };
 
+export type WPAuthor = {
+  name?: string | null;
+  slug?: string | null;
+  description?: string | null;
+  avatar?: {
+    url?: string | null;
+  } | null;
+};
+
+export type WPAuthorSummary = {
+  name: string;
+  slug: string;
+  description: string;
+  avatarUrl: string;
+};
+
 export type WPPostCard = {
   id: string;
   slug: string;
@@ -19,12 +35,14 @@ export type WPPostCard = {
   title: string;
   excerpt: string;
   date: string;
+  author?: {
+    node?: WPAuthor | null;
+  } | null;
   featuredImage?: { node?: WPImage | null } | null;
 };
 
 export type WPPost = WPPostCard & {
   content: string;
-  author?: { node?: { name?: string | null } | null } | null;
 };
 
 const POST_CARD_FIELDS = `
@@ -34,6 +52,16 @@ const POST_CARD_FIELDS = `
   title
   excerpt
   date
+  author {
+    node {
+      name
+      slug
+      description
+      avatar {
+        url
+      }
+    }
+  }
   featuredImage {
     node {
       sourceUrl
@@ -77,10 +105,10 @@ async function wpFetch<T>(
   return json.data;
 }
 
-export async function fetchPosts(first = 24): Promise<WPPostCard[]> {
+export async function fetchPosts(first = 24, search = ''): Promise<WPPostCard[]> {
   const query = `
-    query GetPosts($first: Int!) {
-      posts(first: $first, where: { status: PUBLISH, orderby: { field: DATE, order: DESC } }) {
+    query GetPosts($first: Int!, $search: String) {
+      posts(first: $first, where: { status: PUBLISH, search: $search, orderby: { field: DATE, order: DESC } }) {
         nodes {
           ${POST_CARD_FIELDS}
         }
@@ -89,7 +117,7 @@ export async function fetchPosts(first = 24): Promise<WPPostCard[]> {
   `;
 
   type Data = { posts: { nodes: WPPostCard[] } };
-  const data = await wpFetch<Data>(query, { first }, 120, ['posts']);
+  const data = await wpFetch<Data>(query, { first, search: search.trim() || null }, 120, ['posts']);
   return data.posts.nodes;
 }
 
@@ -148,4 +176,27 @@ export function formatDate(date: string): string {
     month: 'long',
     year: 'numeric',
   }).format(new Date(date));
+}
+
+export function getAuthorSummaries(posts: WPPostCard[], limit = 4): WPAuthorSummary[] {
+  const map = new Map<string, WPAuthorSummary>();
+
+  for (const post of posts) {
+    const author = post.author?.node;
+    const name = author?.name?.trim() || '';
+    if (!name) continue;
+
+    const slug = (author?.slug?.trim() || name.toLowerCase().replace(/\s+/g, '-')).slice(0, 90);
+    const key = slug || name.toLowerCase();
+    if (map.has(key)) continue;
+
+    map.set(key, {
+      name,
+      slug,
+      description: (author?.description?.trim() || 'Autor convidado do Blog BELEGANTE_.').slice(0, 220),
+      avatarUrl: author?.avatar?.url?.trim() || '',
+    });
+  }
+
+  return Array.from(map.values()).slice(0, limit);
 }

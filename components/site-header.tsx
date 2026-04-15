@@ -1,16 +1,20 @@
 import Link from 'next/link';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-[#e7e0d4] bg-[#f6f2eb]/90 backdrop-blur">
-      <div className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between px-6">
-        <Link href="/" className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-ink">
-          Blog Belegante
+    <header className="sticky top-0 z-50 border-b border-[var(--line)] bg-[color:var(--surface-overlay)] backdrop-blur">
+      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6">
+        <Link href="/" className="text-lg font-semibold uppercase tracking-[0.18em] text-[var(--text-main)]">
+          BELEGANTE_
         </Link>
 
-        <nav className="flex items-center gap-6 text-sm text-brand-muted">
+        <nav className="flex items-center gap-5 text-sm text-[var(--text-muted)]">
           <Link href="/" className="transition-colors hover:text-brand-orange">
             Início
+          </Link>
+          <Link href="/posts" className="transition-colors hover:text-brand-orange">
+            Posts
           </Link>
           <a
             href="https://belegante.co"
@@ -20,6 +24,7 @@ export function SiteHeader() {
           >
             Site
           </a>
+          <ThemeToggle />
         </nav>
       </div>
     </header>

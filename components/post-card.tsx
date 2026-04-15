@@ -9,11 +9,12 @@ type Props = {
 export function PostCard({ post }: Props) {
   const plainExcerpt = htmlToText(post.excerpt);
   const image = post.featuredImage?.node;
+  const authorName = post.author?.node?.name?.trim() || 'Equipe BELEGANTE_';
 
   return (
-    <article className="group overflow-hidden rounded-xl2 border border-[#e8e2d8] bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(30,26,22,0.12)]">
+    <article className="group overflow-hidden rounded-xl2 border border-[var(--line)] bg-[var(--surface)] shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(30,26,22,0.12)]">
       <Link href={`/posts/${post.slug}`} className="block">
-        <div className="relative aspect-[16/10] bg-[#eee7db]">
+        <div className="relative aspect-[16/10] bg-[var(--surface-2)]">
           {image?.sourceUrl ? (
             <Image
               src={image.sourceUrl}
@@ -23,19 +24,22 @@ export function PostCard({ post }: Props) {
               sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
             />
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-[#f0e7d7] to-[#ddd1bb]" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[var(--surface)] to-[var(--surface-2)]" />
           )}
         </div>
 
         <div className="space-y-4 p-6">
-          <p className="text-xs uppercase tracking-[0.16em] text-brand-muted">{formatDate(post.date)}</p>
+          <div className="flex items-center justify-between gap-3 text-xs uppercase tracking-[0.16em] text-[var(--text-muted)]">
+            <p>{formatDate(post.date)}</p>
+            <p>{authorName}</p>
+          </div>
 
           <h2
-            className="font-heading text-2xl leading-tight text-brand-ink transition-colors group-hover:text-brand-orange"
+            className="font-heading text-2xl leading-tight text-[var(--text-main)] transition-colors group-hover:text-brand-orange"
             dangerouslySetInnerHTML={{ __html: post.title }}
           />
 
-          {plainExcerpt ? <p className="line-clamp-3 text-base leading-relaxed text-brand-muted">{plainExcerpt}</p> : null}
+          {plainExcerpt ? <p className="line-clamp-3 text-base leading-relaxed text-[var(--text-muted)]">{plainExcerpt}</p> : null}
         </div>
       </Link>
     </article>
