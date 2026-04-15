@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 520px at 90% -120px, rgba(255, 77, 0, 0.08), transparent 60%),
+    radial-gradient(1000px 400px at -10% 0%, rgba(143, 111, 67, 0.08), transparent 55%),
+    #f6f2eb;
+}
+
+.prose img {
+  border-radius: 0.9rem;
+}
