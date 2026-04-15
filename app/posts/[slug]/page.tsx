@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { fetchPostBySlug, fetchPostSlugs, formatDate, htmlToText } from '@/lib/wp';
 
@@ -58,7 +57,6 @@ export default async function PostPage({ params }: Props) {
     notFound();
   }
 
-  const featuredImage = post.featuredImage?.node;
   const contentHtml = post.content?.trim() || post.excerpt?.trim() || '';
 
   return (
@@ -73,19 +71,6 @@ export default async function PostPage({ params }: Props) {
 
         {post.author?.node?.name ? <p className="text-base text-brand-muted">Por {post.author.node.name}</p> : null}
       </header>
-
-      {featuredImage?.sourceUrl ? (
-        <figure className="relative mt-10 aspect-[16/9] overflow-hidden rounded-xl2 border border-[#e8e2d8] bg-white shadow-soft">
-          <Image
-            src={featuredImage.sourceUrl}
-            alt={featuredImage.altText || htmlToText(post.title)}
-            fill
-            className="object-cover"
-            sizes="(min-width: 1024px) 896px, 100vw"
-            priority
-          />
-        </figure>
-      ) : null}
 
       {contentHtml ? (
         <section
