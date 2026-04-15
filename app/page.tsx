@@ -26,7 +26,7 @@ export default async function HomePage() {
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-orange">Web designer e Gestor de tráfego</p>
 
         <h1 className="max-w-[16ch] font-heading text-5xl leading-[0.98] text-[var(--text-main)] md:text-7xl">
-          Blog da BELEGANTE_ com dicas para profissionais e empresários
+          Blog da BELEGANTE_
         </h1>
 
         <p className="max-w-2xl text-lg leading-relaxed text-[var(--text-muted)]">
