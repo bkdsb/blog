@@ -59,6 +59,7 @@ export default async function PostPage({ params }: Props) {
   }
 
   const featuredImage = post.featuredImage?.node;
+  const contentHtml = post.content?.trim() || post.excerpt?.trim() || '';
 
   return (
     <article className="mx-auto w-full max-w-4xl px-6 pb-24 pt-14 md:pt-20">
@@ -86,10 +87,14 @@ export default async function PostPage({ params }: Props) {
         </figure>
       ) : null}
 
-      <section
-        className="prose prose-lg mt-10 max-w-none prose-headings:font-heading prose-headings:text-brand-ink prose-p:text-brand-ink prose-a:text-brand-orange prose-a:no-underline hover:prose-a:underline prose-strong:text-brand-ink prose-blockquote:border-brand-orange prose-blockquote:text-brand-muted"
-        dangerouslySetInnerHTML={{ __html: post.content }}
-      />
+      {contentHtml ? (
+        <section
+          className="prose prose-lg mt-10 max-w-none prose-headings:font-heading prose-headings:text-brand-ink prose-p:text-brand-ink prose-a:text-brand-orange prose-a:no-underline hover:prose-a:underline prose-strong:text-brand-ink prose-blockquote:border-brand-orange prose-blockquote:text-brand-muted"
+          dangerouslySetInnerHTML={{ __html: contentHtml }}
+        />
+      ) : (
+        <p className="mt-10 text-brand-muted">Este post ainda não possui conteúdo visível.</p>
+      )}
     </article>
   );
 }

@@ -46,14 +46,19 @@ const POST_CARD_FIELDS = `
   }
 `;
 
-async function wpFetch<T>(query: string, variables?: Record<string, unknown>, revalidate = 120): Promise<T> {
+async function wpFetch<T>(
+  query: string,
+  variables?: Record<string, unknown>,
+  revalidate = 120,
+  tags?: string[],
+): Promise<T> {
   const response = await fetch(WPGRAPHQL_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ query, variables }),
-    next: { revalidate },
+    next: { revalidate, tags },
   });
 
   if (!response.ok) {
@@ -84,7 +89,7 @@ export async function fetchPosts(first = 24): Promise<WPPostCard[]> {
   `;
 
   type Data = { posts: { nodes: WPPostCard[] } };
-  const data = await wpFetch<Data>(query, { first }, 120);
+  const data = await wpFetch<Data>(query, { first }, 120, ['posts']);
   return data.posts.nodes;
 }
 
@@ -104,7 +109,7 @@ export async function fetchPostBySlug(slug: string): Promise<WPPost | null> {
   `;
 
   type Data = { post: WPPost | null };
-  const data = await wpFetch<Data>(query, { slug }, 120);
+  const data = await wpFetch<Data>(query, { slug }, 120, ['posts', `post:${slug}`]);
   return data.post;
 }
 
@@ -120,7 +125,7 @@ export async function fetchPostSlugs(first = 100): Promise<string[]> {
   `;
 
   type Data = { posts: { nodes: { slug: string }[] } };
-  const data = await wpFetch<Data>(query, { first }, 600);
+  const data = await wpFetch<Data>(query, { first }, 600, ['posts']);
   return data.posts.nodes.map((node) => node.slug);
 }
 
